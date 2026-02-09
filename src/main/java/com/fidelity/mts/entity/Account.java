@@ -86,5 +86,16 @@ public class Account {
 
 	public void setLastUpdated(Timestamp lastUpdated) {
 		this.lastUpdated = lastUpdated;
-	}    
+	}
+	
+	public void debit() {
+		
+	}
+	
+	public void credit() {
+		
+	}
+	public void isActive() {
+		
+	}
 }
