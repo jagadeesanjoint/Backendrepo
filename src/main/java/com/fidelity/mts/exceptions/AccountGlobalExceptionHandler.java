@@ -11,7 +11,7 @@ public class AccountGlobalExceptionHandler {
 	public ResponseEntity<String> accountNotFound(AccountNotFoundException ex){
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
 	}
-	/*
+	
 	@ExceptionHandler (value = AccountNotActiveException.class)
 	public ResponseEntity<String> accountNotActiveException(AccountNotActiveException ex){
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
@@ -26,6 +26,6 @@ public class AccountGlobalExceptionHandler {
 	public ResponseEntity<String> insufficientBalanceException(InsufficientBalanceException ex){
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
 	}
-	*/
+	
 }
 

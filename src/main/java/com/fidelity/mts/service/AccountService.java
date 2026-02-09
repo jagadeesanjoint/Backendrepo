@@ -10,5 +10,5 @@ import com.fidelity.mts.entity.TransactionLog;
 public interface AccountService{
 	AccountResponse getAccount(Long id);
 	BigDecimal getBalance(Long id);
-	List<TransactionLog> getTransactions(int id);
+	List<TransactionLog> getTransactions(Long id);
 }

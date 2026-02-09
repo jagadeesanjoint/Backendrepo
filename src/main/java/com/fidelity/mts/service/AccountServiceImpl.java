@@ -12,10 +12,13 @@ import com.fidelity.mts.entity.Account;
 import com.fidelity.mts.entity.TransactionLog;
 import com.fidelity.mts.exceptions.AccountNotFoundException;
 import com.fidelity.mts.repo.AccountRepo;
+import com.fidelity.mts.repo.TransactionRepo;
 
 @Service
 public class AccountServiceImpl implements AccountService{
 	@Autowired AccountRepo repo;
+	
+	@Autowired TransactionRepo transactionRepo;
 
 	@Override
 	public AccountResponse getAccount(Long id) {
@@ -41,8 +44,8 @@ public class AccountServiceImpl implements AccountService{
     }
 
 	@Override
-	public List<TransactionLog> getTransactions(int id) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<TransactionLog> getTransactions(Long id) {
+		return transactionRepo.findByFromAccountIDOrToAccountID( 
+				Long.valueOf(id), Long.valueOf(id));
 	}
 }

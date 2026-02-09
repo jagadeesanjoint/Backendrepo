@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "mts.transaction_log")
+@Table(name = "transaction_log")
 public class TransactionLog {
 
 	@Id

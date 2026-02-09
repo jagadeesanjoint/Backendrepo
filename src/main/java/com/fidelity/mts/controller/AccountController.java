@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fidelity.mts.dto.AccountResponse;
 import com.fidelity.mts.entity.Account;
 import com.fidelity.mts.entity.TransactionLog;
+import com.fidelity.mts.repo.TransactionRepo;
 import com.fidelity.mts.service.AccountService;
 
 @RestController
@@ -22,6 +23,9 @@ import com.fidelity.mts.service.AccountService;
 public class AccountController {
 	@Autowired
 	AccountService service;
+	
+	@Autowired 
+	private TransactionRepo transactionRepo;
 	
 	@Autowired
     public AccountController(AccountService accountService) {
@@ -42,10 +46,7 @@ public class AccountController {
         return ResponseEntity.ok(balance);
     }
 
-	@GetMapping("/{id}/transactions")
-	public List<TransactionLog> getTransactions(int id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @GetMapping("/{id}/transactions") public List<TransactionLog> getTransactions(@PathVariable("id") Long id) { 
+    	return transactionRepo.findByFromAccountIDOrToAccountID(id, id); }
 
 }
