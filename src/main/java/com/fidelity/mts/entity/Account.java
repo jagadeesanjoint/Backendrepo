@@ -3,16 +3,11 @@ package com.fidelity.mts.entity;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fidelity.mts.enums.AccountStatus;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
@@ -29,11 +24,13 @@ public class Account {
 	
 	@Column(precision = 18, scale = 2)   //Decimal(18,2)
 	@NotNull
-    private BigDecimal balance; 
-    
-    @Column(length = 20)
+    private BigDecimal balance;
+
+	@Enumerated(EnumType.STRING)
+	@Column(length = 20)
 	@NotNull
-    private AccountStatus status; 
+	private AccountStatus status;
+
     
     @Column(precision = 0)               //Default = 0
 	private Integer version;       

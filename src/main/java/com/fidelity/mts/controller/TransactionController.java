@@ -11,13 +11,14 @@ import com.fidelity.mts.service.TransactionService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v")
+@RequestMapping("/api/v1/transfers")
+@CrossOrigin(origins = "*")
 public class TransactionController {
 
     @Autowired
     private TransactionService transferService;
 
-    @PostMapping("/transfer")
+    @PostMapping("")
     public ResponseEntity<TransactionLog> transfer(@Valid @RequestBody TransferRequest request) {
         TransactionLog log = transferService.transfer(request);
         return ResponseEntity.ok(log);

@@ -32,6 +32,14 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     @Override
     public TransactionLog transfer(TransferRequest request) {
+        // Generate a unique idempotency key automatically if not provided (ensures never repeated)
+        String idempotencyKey = request.getIdempotencyKey();
+        if (idempotencyKey == null || idempotencyKey.isBlank()) {
+            idempotencyKey = UUID.randomUUID().toString();
+            request.setIdempotencyKey(idempotencyKey);
+        } else if (transactionLogRepository.existsByIdempotencyKey(idempotencyKey)) {
+            throw new DuplicateTransferException();
+        }
         validateTransfer(request);
         return executeTransfer(request);
     }
@@ -51,14 +59,9 @@ public class TransactionServiceImpl implements TransactionService {
         if (fromAccount.getStatus() != AccountStatus.ACTIVE || toAccount.getStatus() != AccountStatus.ACTIVE) {
             throw new AccountNotActiveException();
         }
-        
-        if (fromAccount.getBalance().compareTo(request.getAmount()) < 0) { 
-        	throw new InsufficientBalanceException(); 
-        	}
 
-        // Idempotency check
-        if (transactionLogRepository.existsByIdempotencyKey(request.getIdempotencyKey())) {
-            throw new DuplicateTransferException();
+        if (fromAccount.getBalance().compareTo(request.getAmount()) < 0) {
+            throw new InsufficientBalanceException();
         }
     }
 
@@ -67,15 +70,15 @@ public class TransactionServiceImpl implements TransactionService {
         Account fromAccount = accountRepository.findById(request.getFromAccountId()).get();
         Account toAccount = accountRepository.findById(request.getToAccountId()).get();
 
-        // Debit source
+        // Debit source and update account balance
         fromAccount.setBalance(fromAccount.getBalance().subtract(request.getAmount()));
         accountRepository.save(fromAccount);
 
-        // Credit destination
+        // Credit destination and update account balance
         toAccount.setBalance(toAccount.getBalance().add(request.getAmount()));
         accountRepository.save(toAccount);
 
-        // Log transaction
+        // Insert into transaction_log (table created by app; no manual creation needed)
         TransactionLog log = new TransactionLog();
         log.setId(UUID.randomUUID());
         log.setFromAccountID(fromAccount.getId());

@@ -17,7 +17,7 @@ public class TransferRequest {
     @Positive(message = "Transfer amount must be greater than zero")
     private BigDecimal amount;
 
-    @NotNull(message = "Idempotency key is required")
+    // Optional; if not provided, the server generates a unique idempotency key automatically
     @Size(max = 100, message = "Idempotency key must not exceed 100 characters")
     private String idempotencyKey;
 
