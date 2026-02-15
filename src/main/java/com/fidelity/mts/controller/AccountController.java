@@ -27,10 +27,26 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private com.fidelity.mts.repo.UserRepository userRepository;
+
     @GetMapping("/{id}")
     public ResponseEntity<AccountResponse> getAccount(@PathVariable Long id) {
         AccountResponse account = accountService.getAccount(id);
         return ResponseEntity.ok(account);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<AccountResponse> getCurrentAccount(java.security.Principal principal) {
+        String username = principal.getName();
+        return userRepository.findByUsername(username)
+                .map(user -> {
+                    AccountResponse account = accountService.getAccount(user.getId());
+                    // AccountService already sets holderName, but let's ensure it matches if needed
+                    // account.setHolderName(account.getHolderName()); 
+                    return ResponseEntity.ok(account);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{id}/balance")
@@ -43,5 +59,16 @@ public class AccountController {
     public ResponseEntity<List<TransactionLog>> getTransactions(@PathVariable Long id) {
         List<TransactionLog> transactions = accountService.getTransactions(id);
         return ResponseEntity.ok(transactions);
+    }
+
+    @GetMapping("/me/transactions")
+    public ResponseEntity<List<TransactionLog>> getCurrentTransactions(java.security.Principal principal) {
+        String username = principal.getName();
+        return userRepository.findByUsername(username)
+                .map(user -> {
+                    List<TransactionLog> transactions = accountService.getTransactions(user.getId());
+                    return ResponseEntity.ok(transactions);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }
