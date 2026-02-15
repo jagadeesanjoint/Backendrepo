@@ -44,14 +44,27 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new AuthError("Username and password are required."));
         }
-        return userRepository.findByUsername(login.getUsername().trim())
-                .filter(user -> passwordEncoder.matches(login.getPassword(), user.getPassword()))
+        String username = login.getUsername().trim();
+        String rawPassword = login.getPassword();
+        return userRepository.findByUsername(username)
+                .filter(user -> {
+                    if (passwordEncoder.matches(rawPassword, user.getPassword())) {
+                        return true;
+                    }
+                    // One-time migration: if DB has plain-text password (e.g. old seed), accept and upgrade to BCrypt
+                    if (rawPassword.equals(user.getPassword())) {
+                        user.setPassword(passwordEncoder.encode(rawPassword));
+                        userRepository.save(user);
+                        return true;
+                    }
+                    return false;
+                })
                 .map(user -> {
                     try {
                         Long accountId = user.getId();
                         String holderName = accountService.getAccount(accountId).getHolderName();
                         String token = Base64.getEncoder().encodeToString(
-                                (login.getUsername().trim() + ":" + login.getPassword()).getBytes());
+                                (username + ":" + rawPassword).getBytes());
                         return ResponseEntity.ok(new LoginResponse(accountId, holderName, token));
                     } catch (AccountNotFoundException e) {
                         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
