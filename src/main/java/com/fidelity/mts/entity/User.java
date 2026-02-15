@@ -1,19 +1,36 @@
 package com.fidelity.mts.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-
-import jakarta.persistence.*;
-import lombok.*;
-
-@Getter
-@Setter
-@Data
+/**
+ * User for login. id aligns with account.id (1-to-1) for dashboard/transaction context.
+ * Password stored with BCrypt encoding per spec.
+ */
 @Entity
 @Table(name = "username")
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true, length = 255)
+    private String username;
+
+    @Column(nullable = false, length = 255)
+    private String password;
+
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -31,19 +48,4 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
-    @Column(nullable = false, unique = true)
-    private String username;
-
-    @Column(nullable = false)
-    private String password;
 }

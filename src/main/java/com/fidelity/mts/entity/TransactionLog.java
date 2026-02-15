@@ -8,102 +8,121 @@ import com.fidelity.mts.enums.TransactionStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * Domain entity per Progressive Project 1 spec.
+ * Fields: id, fromAccountId, toAccountId, amount, status, failureReason, idempotencyKey, createdOn
+ * DB columns: from_account, to_account per spec.
+ */
 @Entity
-@Table(name = "transaction_log")
+@Table(name = "transaction_logs")
 public class TransactionLog {
 
-	@Id
-	@Column(length = 36)
-	private UUID id;
-	 
-	@Column                                 //foreign key
-	private Long fromAccountID;
-	
-	@Column                                 //foreign key
-	private Long toAccountID;
-	
-	@Column(precision = 18, scale = 2)
-	@NotNull
-	private BigDecimal amount;
-	
-	@Column(length = 20)
-	@NotNull
-	private TransactionStatus status;
-	
-	@Column(length = 255, nullable = true)
-	private String failureReason;
-	
-	@Column(length = 100, unique = true)
-	private String idempotencyKey;
-	
-	@Column(name = "created_on", updatable = false, insertable = false)
-	private Timestamp createdOn;
-	
-	public UUID getId() {
-		return id;
-	}
+    @Id
+    @Column(length = 36)
+    private String id;
 
-	public void setId(UUID id) {
-		this.id = id;
-	}
+    @Column(name = "from_account", nullable = false)
+    private Long fromAccountId;
 
-	public Long getFromAccountID() {
-		return fromAccountID;
-	}
+    @Column(name = "to_account", nullable = false)
+    private Long toAccountId;
 
-	public void setFromAccountID(Long fromAccountID) {
-		this.fromAccountID = fromAccountID;
-	}
+    @Column(precision = 18, scale = 2, nullable = false)
+    @NotNull
+    private BigDecimal amount;
 
-	public Long getToAccountID() {
-		return toAccountID;
-	}
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20, nullable = false)
+    @NotNull
+    private TransactionStatus status;
 
-	public void setToAccountID(Long toAccountID) {
-		this.toAccountID = toAccountID;
-	}
+    @Column(name = "failure_reason", length = 255)
+    private String failureReason;
 
-	public BigDecimal getAmount() {
-		return amount;
-	}
+    @Column(name = "idempotency_key", length = 100, unique = true)
+    private String idempotencyKey;
 
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
-	}
+    @Column(name = "created_on", updatable = false)
+    private Timestamp createdOn;
 
-	public TransactionStatus getStatus() {
-		return status;
-	}
+    @PrePersist
+    protected void onCreate() {
+        if (id == null) {
+            id = UUID.randomUUID().toString();
+        }
+        if (createdOn == null) {
+            createdOn = new Timestamp(System.currentTimeMillis());
+        }
+    }
 
-	public void setStatus(TransactionStatus status) {
-		this.status = status;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public String getFailureReason() {
-		return failureReason;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setFailureReason(String failureReason) {
-		this.failureReason = failureReason;
-	}
+    public Long getFromAccountId() {
+        return fromAccountId;
+    }
 
-	public String getIdempotencyKey() {
-		return idempotencyKey;
-	}
+    public void setFromAccountId(Long fromAccountId) {
+        this.fromAccountId = fromAccountId;
+    }
 
-	public void setIdempotencyKey(String idempotencyKey) {
-		this.idempotencyKey = idempotencyKey;
-	}
+    public Long getToAccountId() {
+        return toAccountId;
+    }
 
-	public Timestamp getCreatedOn() {
-		return createdOn;
-	}
+    public void setToAccountId(Long toAccountId) {
+        this.toAccountId = toAccountId;
+    }
 
-	public void setCreatedOn(Timestamp createdOn) {
-		this.createdOn = createdOn;
-	}
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public TransactionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TransactionStatus status) {
+        this.status = status;
+    }
+
+    public String getFailureReason() {
+        return failureReason;
+    }
+
+    public void setFailureReason(String failureReason) {
+        this.failureReason = failureReason;
+    }
+
+    public String getIdempotencyKey() {
+        return idempotencyKey;
+    }
+
+    public void setIdempotencyKey(String idempotencyKey) {
+        this.idempotencyKey = idempotencyKey;
+    }
+
+    public Timestamp getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Timestamp createdOn) {
+        this.createdOn = createdOn;
+    }
 }

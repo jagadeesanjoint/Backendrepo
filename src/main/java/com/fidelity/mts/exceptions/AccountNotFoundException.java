@@ -2,7 +2,14 @@ package com.fidelity.mts.exceptions;
 
 @SuppressWarnings("serial")
 public class AccountNotFoundException extends RuntimeException {
-	 public AccountNotFoundException() {
-	     super("Account ID doesn't exist");
-	 }
-	}
+
+    public static final String ERROR_CODE = "ACC_404";
+
+    public AccountNotFoundException() {
+        super("Account not found");
+    }
+
+    public AccountNotFoundException(String message) {
+        super(message);
+    }
+}

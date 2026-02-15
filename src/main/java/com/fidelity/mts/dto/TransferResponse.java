@@ -1,5 +1,77 @@
 package com.fidelity.mts.dto;
 
+import java.math.BigDecimal;
+
+/**
+ * Output for transfer API per Progressive Project 1 spec.
+ * transactionId, status, message, debitedFrom, creditedTo, amount
+ */
 public class TransferResponse {
 
+    private String transactionId;
+    private String status;
+    private String message;
+    private Long debitedFrom;
+    private Long creditedTo;
+    private BigDecimal amount;
+
+    public TransferResponse() {}
+
+    public TransferResponse(String transactionId, String status, String message,
+                            Long debitedFrom, Long creditedTo, BigDecimal amount) {
+        this.transactionId = transactionId;
+        this.status = status;
+        this.message = message;
+        this.debitedFrom = debitedFrom;
+        this.creditedTo = creditedTo;
+        this.amount = amount;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Long getDebitedFrom() {
+        return debitedFrom;
+    }
+
+    public void setDebitedFrom(Long debitedFrom) {
+        this.debitedFrom = debitedFrom;
+    }
+
+    public Long getCreditedTo() {
+        return creditedTo;
+    }
+
+    public void setCreditedTo(Long creditedTo) {
+        this.creditedTo = creditedTo;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
 }

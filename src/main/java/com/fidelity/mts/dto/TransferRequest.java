@@ -1,10 +1,15 @@
 package com.fidelity.mts.dto;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+
 import java.math.BigDecimal;
 
+/**
+ * Input for transfer API per Progressive Project 1 spec.
+ * Validations: @NotNull, @DecimalMin
+ */
 public class TransferRequest {
 
     @NotNull(message = "Source account ID is required")
@@ -14,10 +19,9 @@ public class TransferRequest {
     private Long toAccountId;
 
     @NotNull(message = "Transfer amount is required")
-    @Positive(message = "Transfer amount must be greater than zero")
+    @DecimalMin(value = "0.01", message = "Amount must be greater than zero")
     private BigDecimal amount;
 
-    // Optional; if not provided, the server generates a unique idempotency key automatically
     @Size(max = 100, message = "Idempotency key must not exceed 100 characters")
     private String idempotencyKey;
 
